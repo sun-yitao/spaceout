@@ -27,8 +27,8 @@ def callback_combined(data):
             y.append(p.y)
             types.append('odom')
         for p in imu[:50]:
-            x.append(p['x'])
-            y.append(p['y'])
+            x.append(p['x'] + odom[0].x)
+            y.append(p['y'] + odom[0].y)
             types.append('imu')
         for p in combined[:50]:
             x.append(p.x)
@@ -36,7 +36,7 @@ def callback_combined(data):
             types.append('combined')
         df = pd.DataFrame(data={'x': x, 'y': y, 'type': types})
         rospy.loginfo(df)
-        plot = sns.scatterplot(x="x", y="y", hue='type', data=df)
+        plot = sns.scatterplot(x="x", y="y", hue='type', data=df, marker='x')
         plt.autoscale()
         handles, labels = plot.get_legend_handles_labels()
         plot.legend(handles[:min(4, len(handles))], labels[:min(4, len(handles))])  
@@ -55,7 +55,7 @@ def callback_imu(data):
     current_speed_x += (data.linear_acceleration.x / 30)
     current_speed_y += (data.linear_acceleration.y / 30)
     if not imu:
-        imu.append({'x': current_speed_x, 'y': current_speed_y})
+        imu.append({'x': 0, 'y': 0})
     else:
         imu.append({'x': imu[-1]['x'] + current_speed_x / 30, 'y': imu[-1]['y'] + current_speed_y / 30})
     
