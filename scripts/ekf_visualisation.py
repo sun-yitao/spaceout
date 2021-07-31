@@ -24,20 +24,20 @@ def callback_combined(data):
         rospy.loginfo(len(odom))
         rospy.loginfo(len(imu))
         for p in gt:
-            x.append(p.x + 166022.5)
-            y.append(p.y + 2)
+            x.append((p.x + 166022.45)*10)
+            y.append((p.y + 2.6)*10)
             types.append('ground_truth')
         for p in odom:
-            x.append(p.x)
-            y.append(p.y)
+            x.append(p.x*10)
+            y.append(p.y*10)
             types.append('gps')
         for p in imu:
-            x.append(p['x'] + odom[0].x)
-            y.append(p['y'] + odom[0].y)
+            x.append((p['x'] + odom[0].x)*10)
+            y.append((p['y'] + odom[0].y)*10)
             types.append('imu')
         for p in combined:
-            x.append(p.x)
-            y.append(p.y)
+            x.append(p.x*10)
+            y.append(p.y*10)
             types.append('combined')
         df = pd.DataFrame(data={'x': x, 'y': y, 'type': types})
         rospy.loginfo(df)
