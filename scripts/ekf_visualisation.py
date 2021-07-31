@@ -24,7 +24,7 @@ def callback_combined(data):
         rospy.loginfo(len(odom))
         rospy.loginfo(len(imu))
         for p in gt[:100]:
-            x.append(p.x)
+            x.append(p.x + 166023)
             y.append(p.y)
             types.append('ground_truth')
         for p in odom[:100]:
