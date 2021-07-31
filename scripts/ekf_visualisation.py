@@ -24,8 +24,8 @@ def callback_combined(data):
         rospy.loginfo(len(odom))
         rospy.loginfo(len(imu))
         for p in gt:
-            x.append((p.x + 166022.45)*10)
-            y.append((p.y + 2.6)*10)
+            x.append((p.x + 166022.35)*10)
+            y.append((p.y + 2.7)*10)
             types.append('ground_truth')
         for p in odom:
             x.append(p.x*10)
@@ -44,7 +44,7 @@ def callback_combined(data):
         plot = sns.scatterplot(x="x", y="y", hue='type', data=df, marker='x')
         plt.autoscale()
         handles, labels = plot.get_legend_handles_labels()
-        plot.legend(handles[:min(5, len(handles))], labels[:min(5, len(handles))])
+        plot.legend(handles[:min(5, len(handles))], labels[:min(5, len(handles))], loc='lower right')
         plot.figure.savefig("/home/parallels/Downloads/output" + str(num_outputs_saved) + '.png')
         rospy.loginfo("Figure saved")
         num_outputs_saved += 1
