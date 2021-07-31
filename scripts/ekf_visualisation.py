@@ -17,15 +17,15 @@ num_outputs_saved = 0
 
 def callback_combined(data):
     global gt, odom, imu, combined, num_outputs_saved
-    if len(combined) > 50:
+    if len(combined) < 50:
         combined.append(data.pose.pose.position)
     else:
         x,y,types = [],[],[]
         rospy.loginfo(len(odom))
         rospy.loginfo(len(imu))
         for p in gt:
-            x.append(p.x + 166022.2)
-            y.append(p.y + 1.5)
+            x.append(p.x + 166022.5)
+            y.append(p.y + 2)
             types.append('ground_truth')
         for p in odom:
             x.append(p.x)
