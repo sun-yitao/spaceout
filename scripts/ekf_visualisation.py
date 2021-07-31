@@ -11,7 +11,7 @@ odom, imu, combined = [], [], []
 
 def callback_combined(data):
     if len(combined) < 50:
-        combined.append(data.pose.position)
+        combined.append(data.pose.pose.position)
     else:
         x,y,types = [],[],[]
         for p in odom:
@@ -34,10 +34,10 @@ def callback_combined(data):
 
 
 def callback_odom(data):
-    odom.append(data.pose.position)
+    odom.append(data.pose.pose.position)
 
 def callback_imu(data):
-    imu.append(data.pose.position)
+    imu.append(data.pose.pose.position)
     
 def listener():
     rospy.init_node('ekf_visualisation', anonymous=True)
