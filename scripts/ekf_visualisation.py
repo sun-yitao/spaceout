@@ -27,9 +27,11 @@ def callback_combined(data):
             y.append(p.y)
             types.append('combined')
         df = pd.DataFrame(data={'x': x, 'y': y, 'type': types})
+        rospy.loginfo(df)
         plot = sns.scatterplot(x="x", y="y", hue='type', data=df)
         plot.figure.savefig("/home/parallels/Downloads/output.png")
         rospy.loginfo("Figure saved")
+        global odom, imu, combined = [],[],[]
 
 
 
