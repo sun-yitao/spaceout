@@ -16,21 +16,21 @@ current_speed_y = 0
 
 def callback_combined(data):
     global odom, imu, combined
-    if len(combined) < 50:
+    if len(combined) < 50 or len(odom) < 50 or len(imu) < 50:
         combined.append(data.pose.pose.position)
     else:
         x,y,types = [],[],[]
         rospy.loginfo(len(odom))
         rospy.loginfo(len(imu))
-        for p in odom:
+        for p in odom[:50]:
             x.append(p.x)
             y.append(p.y)
             types.append('odom')
-        for p in imu:
+        for p in imu[:50]:
             x.append(p['x'])
             y.append(p['y'])
             types.append('imu')
-        for p in combined:
+        for p in combined[:50]:
             x.append(p.x)
             y.append(p.y)
             types.append('combined')
@@ -57,7 +57,7 @@ def callback_imu(data):
     if not imu:
         imu.append({'x': current_speed_x, 'y': current_speed_y})
     else:
-        imu.append({'x': imu[-1]['x'] + current_speed_x, 'y': imu[-1]['y'] + current_speed_y})
+        imu.append({'x': imu[-1]['x'] + current_speed_x / 30, 'y': imu[-1]['y'] + current_speed_y / 30})
     
 def listener():
     rospy.init_node('ekf_visualisation', anonymous=True)
