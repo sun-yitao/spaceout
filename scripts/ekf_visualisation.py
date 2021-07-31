@@ -10,27 +10,32 @@ import seaborn as sns
 import pandas as pd
 
 
-odom, imu, combined = [], [], []
+gt, odom, imu, combined = [], [], [], [] # odom is gps
 current_speed_x = 0
 current_speed_y = 0
+num_outputs_saved = 0
 
 def callback_combined(data):
-    global odom, imu, combined
-    if len(combined) < 50 or len(odom) < 50 or len(imu) < 50:
+    global gt, odom, imu, combined, num_outputs_saved
+    if len(combined) < 100 or len(odom) < 100 or len(imu) < 100 or len(gt) < 100:
         combined.append(data.pose.pose.position)
     else:
         x,y,types = [],[],[]
         rospy.loginfo(len(odom))
         rospy.loginfo(len(imu))
-        for p in odom[:50]:
+        for p in gt[:100]:
             x.append(p.x)
             y.append(p.y)
-            types.append('odom')
-        for p in imu[:50]:
+            types.append('ground_truth')
+        for p in odom[:100]:
+            x.append(p.x)
+            y.append(p.y)
+            types.append('gps')
+        for p in imu[:100]:
             x.append(p['x'] + odom[0].x)
             y.append(p['y'] + odom[0].y)
             types.append('imu')
-        for p in combined[:50]:
+        for p in combined[:100]:
             x.append(p.x)
             y.append(p.y)
             types.append('combined')
@@ -39,16 +44,19 @@ def callback_combined(data):
         plot = sns.scatterplot(x="x", y="y", hue='type', data=df, marker='x')
         plt.autoscale()
         handles, labels = plot.get_legend_handles_labels()
-        plot.legend(handles[:min(4, len(handles))], labels[:min(4, len(handles))])  
-        plot.figure.savefig("/home/parallels/Downloads/output.png")
-        df.to_csv('/home/parallels/Downloads/output.csv')
+        plot.legend(handles[:min(4, len(handles))], labels[:min(4, len(handles))])
+        plot.figure.savefig("/home/parallels/Downloads/output" + str(num_outputs_saved) + '.png')
         rospy.loginfo("Figure saved")
-        odom, imu, combined = [],[],[]
+        num_outputs_saved += 1
+        gt, odom, imu, combined = [],[],[],[]
 
 
 
 def callback_odom(data):
     odom.append(data.pose.pose.position)
+
+def callback_gt(data):
+    gt.append(data.pose.pose.position)
 
 def callback_imu(data):
     global current_speed_x, current_speed_y
@@ -63,7 +71,8 @@ def listener():
     rospy.init_node('ekf_visualisation', anonymous=True)
 
     rospy.Subscriber("/robot_pose_ekf/odom_combined", PoseWithCovarianceStamped, callback_combined)
-    rospy.Subscriber("odom", Odometry, callback_odom)
+    rospy.Subscriber("/odom", Odometry, callback_odom)
+    rospy.Subscriber("/wheel_odom", Odometry, callback_gt)
     rospy.Subscriber("/imu", Imu, callback_imu)
 
     # spin() simply keeps python from exiting until this node is stopped
