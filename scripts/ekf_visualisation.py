@@ -24,8 +24,8 @@ def callback_combined(data):
         rospy.loginfo(len(odom))
         rospy.loginfo(len(imu))
         for p in gt:
-            x.append((p.y + 166022.35)*10)
-            y.append((p.x + 2.7)*10)
+            x.append((-p.y + odom[0].x - 1.765)*10)
+            y.append((p.x)*10)
             types.append('ground_truth')
         for p in odom:
             x.append(p.x*10)
@@ -48,7 +48,10 @@ def callback_combined(data):
         plot.figure.savefig("/home/parallels/Downloads/output" + str(num_outputs_saved) + '.png')
         rospy.loginfo("Figure saved")
         num_outputs_saved += 1
-        gt, odom, imu, combined = [],[],[],[]
+        del gt[:]
+        del odom[:]
+        del imu[:]
+        del combined[:]
 
 
 
