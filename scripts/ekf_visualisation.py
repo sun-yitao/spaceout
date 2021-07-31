@@ -38,8 +38,9 @@ def callback_combined(data):
         rospy.loginfo(df)
         plot = sns.scatterplot(x="x", y="y", hue='type', data=df)
         handles, labels = plot.get_legend_handles_labels()
-        plot.legend(handles[:3], labels[:3])  
+        plot.legend(handles[:min(4, len(handles))], labels[:min(4, len(handles))])  
         plot.figure.savefig("/home/parallels/Downloads/output.png")
+        df.to_csv('/home/parallels/Downloads/output.csv')
         rospy.loginfo("Figure saved")
         odom, imu, combined = [],[],[]
 
@@ -50,8 +51,8 @@ def callback_odom(data):
 
 def callback_imu(data):
     global current_speed_x, current_speed_y
-    current_speed_x += data.linear_acceleration.x
-    current_speed_y += data.linear_acceleration.y
+    current_speed_x += (data.linear_acceleration.x / 30)
+    current_speed_y += (data.linear_acceleration.y / 30)
     if not imu:
         imu.append({'x': current_speed_x, 'y': current_speed_y})
     else:
