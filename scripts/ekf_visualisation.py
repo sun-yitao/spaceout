@@ -47,6 +47,7 @@ def callback_odom(data):
     odom.append(data.pose.pose.position)
 
 def callback_imu(data):
+    global current_speed_x, current_speed_y
     current_speed_x += data.linear_acceleration.x
     current_speed_y += data.linear_acceleration.y
     if not imu:
