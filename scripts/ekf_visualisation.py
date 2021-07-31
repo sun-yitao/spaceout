@@ -17,7 +17,7 @@ num_outputs_saved = 0
 
 def callback_combined(data):
     global gt, odom, imu, combined, num_outputs_saved
-    if len(combined) > 100 or len(odom) > 100 or len(imu) > 150 or len(gt) > 150:
+    if len(combined) > 50:
         combined.append(data.pose.pose.position)
     else:
         x,y,types = [],[],[]
