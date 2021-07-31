@@ -10,6 +10,7 @@ import pandas as pd
 odom, imu, combined = [], [], []
 
 def callback_combined(data):
+    global odom, imu, combined
     if len(combined) < 50:
         combined.append(data.pose.pose.position)
     else:
@@ -31,7 +32,7 @@ def callback_combined(data):
         plot = sns.scatterplot(x="x", y="y", hue='type', data=df)
         plot.figure.savefig("/home/parallels/Downloads/output.png")
         rospy.loginfo("Figure saved")
-        global odom, imu, combined = [],[],[]
+        odom, imu, combined = [],[],[]
 
 
 
