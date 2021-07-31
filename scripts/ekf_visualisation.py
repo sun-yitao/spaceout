@@ -37,6 +37,7 @@ def callback_combined(data):
         df = pd.DataFrame(data={'x': x, 'y': y, 'type': types})
         rospy.loginfo(df)
         plot = sns.scatterplot(x="x", y="y", hue='type', data=df)
+        plt.autoscale()
         handles, labels = plot.get_legend_handles_labels()
         plot.legend(handles[:min(4, len(handles))], labels[:min(4, len(handles))])  
         plot.figure.savefig("/home/parallels/Downloads/output.png")
