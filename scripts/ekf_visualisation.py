@@ -17,7 +17,7 @@ num_outputs_saved = 0
 
 def callback_combined(data):
     global gt, odom, imu, combined, num_outputs_saved
-    if len(combined) < 100 or len(odom) < 100 or len(imu) < 100 or len(gt) < 100:
+    if len(combined) < 100 and len(odom) < 100 and len(imu) < 100 and len(gt) < 100:
         combined.append(data.pose.pose.position)
     else:
         x,y,types = [],[],[]
@@ -44,7 +44,7 @@ def callback_combined(data):
         plot = sns.scatterplot(x="x", y="y", hue='type', data=df, marker='x')
         plt.autoscale()
         handles, labels = plot.get_legend_handles_labels()
-        plot.legend(handles[:min(4, len(handles))], labels[:min(4, len(handles))])
+        plot.legend(handles[:min(5, len(handles))], labels[:min(5, len(handles))])
         plot.figure.savefig("/home/parallels/Downloads/output" + str(num_outputs_saved) + '.png')
         rospy.loginfo("Figure saved")
         num_outputs_saved += 1
