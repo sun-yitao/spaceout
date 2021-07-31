@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import rospy
-from geometric_msgs.msg import PoseWithCovarianceStamped
+from geometry_msgs.msg import PoseWithCovarianceStamped
 
 def callback(data):
-    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.pose)
     
 def listener():
     rospy.init_node('ekf_visualisation', anonymous=True)
