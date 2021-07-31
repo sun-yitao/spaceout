@@ -24,8 +24,8 @@ def callback_combined(data):
         rospy.loginfo(len(odom))
         rospy.loginfo(len(imu))
         for p in gt[:100]:
-            x.append(p.x + 166023)
-            y.append(p.y)
+            x.append(p.x + 166022.5)
+            y.append(p.y + 0.5)
             types.append('ground_truth')
         for p in odom[:100]:
             x.append(p.x)
@@ -60,12 +60,12 @@ def callback_gt(data):
 
 def callback_imu(data):
     global current_speed_x, current_speed_y
-    current_speed_x += (data.linear_acceleration.x / 30)
-    current_speed_y += (data.linear_acceleration.y / 30)
+    current_speed_x += (data.linear_acceleration.x / 10)
+    current_speed_y += (data.linear_acceleration.y / 10)
     if not imu:
         imu.append({'x': 0, 'y': 0})
     else:
-        imu.append({'x': imu[-1]['x'] + current_speed_x / 30, 'y': imu[-1]['y'] + current_speed_y / 30})
+        imu.append({'x': imu[-1]['x'] + current_speed_x / 10, 'y': imu[-1]['y'] + current_speed_y / 10})
     
 def listener():
     rospy.init_node('ekf_visualisation', anonymous=True)
